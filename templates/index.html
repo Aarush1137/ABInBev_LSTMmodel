@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beer Availability Case Study</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        header {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0 0 10px 0;
+        }
+
+        header p {
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            margin-bottom: 15px;
+        }
+
+        .map-container {
+            width: 100%;
+            height: 600px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .forecast-item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Beer Availability Case Study</h1>
+        <p>Addressing the Challenge of Beer Unavailability in India</p>
+    </header>
+    
+    {% if forecast_data %}
+    <div class="container">
+        <section class="section" id="introduction">
+            <h2>Introduction</h2>
+            <p>The Indian beer market is booming, but a major hurdle is the sporadic unavailability of beer in certain areas. This not only leads to missed sales opportunities but also leaves customers high and dry. To combat this, we aim to implement a robust solution that fortifies the demand-supply chain, ensuring that a cold one is always within reach.</p>
+        </section>
+        
+        <section class="section" id="market-analysis">
+            <h2>Market Analysis</h2>
+            <p>India's beer market is on a steady upward trajectory. In 2024, it was valued at a cool INR 444.6 billion, and projections show it reaching a frothy INR 802.5 billion by 2033, growing at a refreshing CAGR of 6.72% between 2025 and 2033. This growth is fueled by factors such as:</p>
+            <ul>
+                <li>A growing young population with a thirst for beer</li>
+                <li>Rising disposable incomes, meaning more cash for brews</li>
+                <li>Changing lifestyles and social norms, making beer more acceptable</li>
+                <li>Increasing urbanization, leading to greater demand in cities</li>
+            </ul>
+        </section>
+        
+        <section class="section" id="demand-forecasting">
+            <h2>Demand Forecasting Model</h2>
+            <p>To tackle the issue of beer unavailability head-on, we propose a sophisticated demand forecasting model. This model will not only predict future demand but also help optimize the entire supply chain. By accurately forecasting demand, we can ensure that the right amount of beer is brewed and delivered to the right places at the right time.</p>
+            <p>Our model will take into account various factors that influence demand, such as:</p>
+            <ul>
+                <li>Historical sales data, to understand past trends</li>
+                <li>Seasonality, as beer sales tend to be higher in warmer months</li>
+                <li>Special events, like festivals or sporting events, which can cause demand spikes</li>
+                <li>Economic conditions, as people tend to drink less beer during recessions</li>
+                <li>Marketing campaigns, which can boost demand</li>
+            </ul>
+        </section>
+        
+        <section class="section" id="technology-recommendations">
+            <h2>Technology Recommendations</h2>
+            <p>To make our demand forecasting model even more powerful, we recommend leveraging the latest technology. This includes:</p>
+            <ul>
+                <li>Real-time data analysis tools, to track sales and inventory levels</li>
+                <li>Machine learning algorithms, to improve the accuracy of our forecasts</li>
+                <li>Cloud-based platforms, to store and analyze large datasets</li>
+                <li>Improved communication infrastructure, to ensure seamless information flow between stakeholders</li>
+            </ul>
+        </section>
+    </div>
+    
+    <div class="stats-container">
+        <div class="stat-card">
+            <h3>Total Cities</h3>
+            <div class="stat-value">{{ total_cities }}</div>
+        </div>
+        <div class="stat-card">
+            <h3>Average Forecast</h3>
+            <div class="stat-value">{{ average_forecast }}</div>
+        </div>
+        <div class="stat-card">
+            <h3>Highest Forecast</h3>
+            <div class="stat-value">{{ max_forecast }}</div>
+        </div>
+        <div class="stat-card">
+            <h3>Lowest Forecast</h3>
+            <div class="stat-value">{{ min_forecast }}</div>
+        </div>
+    </div>
+    
+    <div id="map"></div>
+    
+    <div class="forecast-data">
+        <h2>City-wise Forecast Results</h2>
+        <div class="forecast-grid">
+            {% for item in forecast_data %}
+            <div class="forecast-item">
+                <div class="city">{{ item.city }}</div>
+                <div class="value">{{ item.forecast }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <script>
+        var graphs = {{ map_json | safe }};
+        Plotly.newPlot('map', graphs.data, graphs.layout);
+    </script>
+    {% else %}
+    <div class="forecast-data">
+        <h2>Upload your CSV file to see the forecast results</h2>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".csv">
+            <button type="submit">Generate Forecast</button>
+        </form>
+    </div>
+    {% endif %}
+</body>
+</html>
